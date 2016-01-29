@@ -1,6 +1,7 @@
 import org.apache.commons.io.*;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
@@ -148,6 +149,8 @@ public class MainWindow {
         frame.setContentPane(new MainWindow().panelMain);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
+        frame.setSize(new Dimension(500, 400));
+        frame.setTitle("JDrop");
         frame.setVisible(true);
     }
 }

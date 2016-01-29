@@ -83,7 +83,6 @@ public class Server implements Runnable {
                 } else {
                     System.out.println("Code mismatch. File/text discarded.");
                 }
-                //TODO: Add renewCode here
                 this.code = renewCode();
                 this.mw.updateLblCode(this.code);
             }
