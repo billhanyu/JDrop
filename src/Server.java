@@ -43,7 +43,7 @@ public class Server implements Runnable {
                 socket = ss.accept();
                 System.out.println("Incoming transmission from: " +
                         socket.getInetAddress().toString().substring(1));
-                BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF_16"));
                 String line = br.readLine();
                 String[] params = line.split(" ");
                 String code = params[0]; String transmissionType = params[1];
