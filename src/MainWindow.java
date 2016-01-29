@@ -1,14 +1,12 @@
 import org.apache.commons.io.*;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
-import java.net.Inet4Address;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.UnknownHostException;
+import java.net.*;
 import java.util.regex.Pattern;
 
 /**
@@ -83,7 +81,10 @@ public class MainWindow {
                                 bw.write(txtTargetCode.getText() + " FILE");
                                 bw.newLine();
                                 bw.flush();
-                                bw.write(file.getName() + " " + file.length());
+                                bw.write(file.getName());
+                                bw.newLine();
+                                bw.flush();
+                                bw.write(file.length() + "");
                                 bw.newLine();
                                 bw.flush();
                                 FileInputStream fis = new FileInputStream(file);
@@ -100,6 +101,9 @@ public class MainWindow {
                             }
                         }
                         socket.close();
+                    } catch (ConnectException e2) {
+                        //  If there's problem with connection
+                        JOptionPane.showMessageDialog(panelMain, "Connection refused.");
                     } catch (IOException e1) {
                         e1.printStackTrace();
                     }
@@ -122,6 +126,16 @@ public class MainWindow {
                 JOptionPane.showMessageDialog(panelMain, "Could not validate destination IP address.");
                 return false;
             }
+        }
+
+        String input = txtTargetCode.getText();
+        if (!StringUtils.isNumeric(input)) {
+            JOptionPane.showMessageDialog(panelMain, "Invalid code. Authentication code is a 4-digit number.\n Error: Not a number");
+            txtTargetCode.requestFocus();
+            return false;
+        } else if (input.length() > 4) {
+            JOptionPane.showMessageDialog(panelMain, "Invalid code.Authentication code is a 4-digit number.\n Error: input too long");
+            return false;
         }
 
         if (txtMessage.getText().equals("") && file == null) {

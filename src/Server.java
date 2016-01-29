@@ -12,7 +12,7 @@ import java.util.Random;
  * Created by Morton on 1/28/16.
  */
 public class Server implements Runnable {
-    public final static int DEFAULT_PORT = 10000;
+    public final static int DEFAULT_PORT = 10001;
 
     ServerSocket ss;
     Socket socket;
@@ -53,15 +53,19 @@ public class Server implements Runnable {
                         MessageDialog md = new MessageDialog(line);
                         System.out.println("Message received: " + line);
                         md.setVisible(true);
+                        this.code = renewCode();
+                        this.mw.updateLblCode(this.code);
                     } else if (transmissionType.equals("FILE")) {
-                        line = br.readLine();
-                        String[] fileParams = line.split(" ");
-                        int option = JOptionPane.showConfirmDialog(mw.getPanel(),
-                                "Incoming file. Do you want to save it?\nFilename: " + fileParams[0] +
-                                        "\nSize: " + (Math.round(Double.parseDouble(fileParams[1]) / 1024.0 * 100) / 100.0) + " KB", "Incoming", JOptionPane.YES_NO_OPTION);
+                        String filename = br.readLine();
+                        String filesize = br.readLine();
+                        /*int option = JOptionPane.showConfirmDialog(mw.getPanel(),
+                                "Incoming file. Do you want to save it?\nFilename: " + filename +
+                                        "\nSize: " + (Math.round(Double.parseDouble(filesize) / 1024.0 * 100) / 100.0) + " KB",
+                                "Incoming", JOptionPane.YES_NO_OPTION);*/
+                        int option = JOptionPane.YES_OPTION;
                         if (option == JOptionPane.YES_OPTION) {
                             JFileChooser fc = new JFileChooser();
-                            fc.setSelectedFile(new File(fileParams[0]));
+                            fc.setSelectedFile(new File(filename));
                             int fileOption = fc.showSaveDialog(mw.getPanel());
                             boolean confirmDiscard = false;
 
@@ -79,12 +83,13 @@ public class Server implements Runnable {
                                 fos.close();
                             }
                         }
+                        this.code = renewCode();
+                        this.mw.updateLblCode(this.code);
                     }
                 } else {
                     System.out.println("Code mismatch. File/text discarded.");
                 }
-                this.code = renewCode();
-                this.mw.updateLblCode(this.code);
+                br.close();
             }
         } catch (InterruptedIOException e1) {
             onSystemExit = true;
