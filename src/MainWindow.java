@@ -79,7 +79,7 @@ public class MainWindow {
                         socket = new Socket(txtDestIP.getText(), Server.DEFAULT_PORT);
                         if (socket.isConnected()) {
                             if (file != null) {  //  Sending file
-                                BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+                                BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-16"));
                                 bw.write(txtTargetCode.getText() + " FILE");
                                 bw.newLine();
                                 bw.flush();
