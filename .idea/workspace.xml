@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d3126288-9b10-4251-a1be-67af876b5a97" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Server.java" afterPath="$PROJECT_DIR$/src/Server.java" />
     </list>
     <ignored path="JDrop.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -334,7 +332,13 @@
       <option name="project" value="LOCAL" />
       <updated>1454046244871</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Changed to UTF-16 Encoding to support Chinese characters">
+      <created>1454048366795</created>
+      <option name="number" value="00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1454048366795</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -372,7 +376,8 @@
     <MESSAGE value="Finished most of the skeleton.&#10;&#10;TODO: &#10;Complete code generation mechanism&#10;Complete reception mechanism" />
     <MESSAGE value="Finished major functionalities." />
     <MESSAGE value="Added Artifacts" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added Artifacts" />
+    <MESSAGE value="Changed to UTF-16 Encoding to support Chinese characters" />
+    <option name="LAST_COMMIT_MESSAGE" value="Changed to UTF-16 Encoding to support Chinese characters" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
