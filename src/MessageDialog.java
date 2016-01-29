@@ -9,14 +9,12 @@ public class MessageDialog extends JDialog {
     private JButton btnOK;
     private JButton btnCancel;
     private JTextArea txtMessage;
-    private JLabel lblCopiedState;
+    private JButton btnCopy;
 
     public MessageDialog() {
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(btnOK);
-
-        lblCopiedState.setVisible(false);
 
         btnOK.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -27,6 +25,14 @@ public class MessageDialog extends JDialog {
         btnCancel.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 onCancel();
+            }
+        });
+
+        btnCopy.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(txtMessage.getText()), null);
+                btnCopy.setText("Copied!");
             }
         });
 
@@ -45,16 +51,6 @@ public class MessageDialog extends JDialog {
                 onCancel();
             }
         }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
-        contentPane.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                super.mouseClicked(e);
-                Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-                clipboard.setContents(new StringSelection(txtMessage.getText()), null);
-                lblCopiedState.setVisible(true);
-            }
-        });
-
         setSize(new Dimension(300, 200));
     }
 

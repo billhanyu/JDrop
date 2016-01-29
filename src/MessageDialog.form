@@ -47,12 +47,12 @@
               </component>
             </children>
           </grid>
-          <component id="ce802" class="javax.swing.JLabel" binding="lblCopiedState">
+          <component id="ae180" class="javax.swing.JButton" binding="btnCopy">
             <constraints>
-              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <text value="Copied!"/>
+              <text value="Copy"/>
             </properties>
           </component>
         </children>
@@ -85,6 +85,7 @@
               </grid>
             </constraints>
             <properties>
+              <editable value="false"/>
               <lineWrap value="true"/>
             </properties>
           </component>

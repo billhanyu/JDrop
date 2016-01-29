@@ -42,6 +42,9 @@ public class MainWindow {
             e.printStackTrace();
         }
 
+        Thread serverThread = new Thread(new Server(this));
+        serverThread.start();
+
         btnBrowse.addActionListener(new ActionListener() {
             boolean fileSelected = false;
             @Override
@@ -91,7 +94,7 @@ public class MainWindow {
                                 IOUtils.copy(fis, socket.getOutputStream());
                                 bw.flush();
                             } else {  //  Sending text
-                                BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+                                BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF_16"));
                                 bw.write(txtTargetCode.getText() + " TEXT");
                                 bw.newLine();
                                 bw.flush();
@@ -110,9 +113,6 @@ public class MainWindow {
                 }
             }
         });
-
-        Thread serverThread = new Thread(new Server(this));
-        serverThread.start();
     }
 
     public boolean validateEntries() {  // Verifies if all entries have been satisfied
@@ -163,6 +163,8 @@ public class MainWindow {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setSize(new Dimension(500, 400));
+        Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+        frame.setLocation(d.width / 2 - frame.getSize().width / 2, d.height / 2 - frame.getSize().height / 2);
         frame.setTitle("JDrop");
         frame.setVisible(true);
     }
