@@ -88,7 +88,6 @@ public class MainWindow {
                                 bw.flush();
                                 FileInputStream fis = new FileInputStream(file);
                                 IOUtils.copy(fis, socket.getOutputStream());
-                                bw.newLine();
                                 bw.flush();
                             } else {  //  Sending text
                                 BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
