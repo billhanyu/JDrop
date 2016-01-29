@@ -8,7 +8,6 @@ import java.net.Inet4Address;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.Random;
 import java.util.regex.Pattern;
 
 /**
@@ -27,6 +26,8 @@ public class MainWindow {
     private JPanel panelMain;
     private JLabel lblCodeIndicator;
     private JLabel lblCode;
+    private JLabel lblTargetCode;
+    private JTextField txtTargetCode;
 
     File file;
     ServerSocket ss;
@@ -67,25 +68,47 @@ public class MainWindow {
             }
         });
 
+
+
         btnSend.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (validateEntries()) {
                     try {
                         socket = new Socket(txtDestIP.getText(), Server.DEFAULT_PORT);
-                        if (file != null) {  //  Sending file
-                            FileInputStream fis = new FileInputStream(file);
-                            IOUtils.copy(fis, socket.getOutputStream());
-                        } else {  //  Sending text
-                            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-                            bw.write(txtMessage.getText());
+                        if (socket.isConnected()) {
+                            if (file != null) {  //  Sending file
+                                BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+                                bw.write(txtTargetCode.getText() + " FILE");
+                                bw.newLine();
+                                bw.flush();
+                                bw.write(file.getName() + " " + file.length());
+                                bw.newLine();
+                                bw.flush();
+                                FileInputStream fis = new FileInputStream(file);
+                                IOUtils.copy(fis, socket.getOutputStream());
+                                bw.newLine();
+                                bw.flush();
+                            } else {  //  Sending text
+                                BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+                                bw.write(txtTargetCode.getText() + " TEXT");
+                                bw.newLine();
+                                bw.flush();
+                                bw.write(txtMessage.getText());
+                                bw.newLine();
+                                bw.flush();
+                            }
                         }
+                        socket.close();
                     } catch (IOException e1) {
                         e1.printStackTrace();
                     }
                 }
             }
         });
+
+        Thread serverThread = new Thread(new Server(this));
+        serverThread.start();
     }
 
     public boolean validateEntries() {  // Verifies if all entries have been satisfied
@@ -110,14 +133,21 @@ public class MainWindow {
         return true;
     }
 
+    public void updateLblCode(int code) {
+        String formatted = code + "";
+        if (code < 10) formatted = 0 + formatted;
+        if (code < 100) formatted = 0 + formatted;
+        if (code < 1000) formatted = 0 + formatted;
+        lblCode.setText(formatted);
+    }
+
+    public JPanel getPanel() {return panelMain;}
+
     public static void main(String[] args) {
         JFrame frame = new JFrame("MainWindow");
         frame.setContentPane(new MainWindow().panelMain);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
-
-        Thread serverThread = new Thread(new Server());
-        serverThread.start();
     }
 }

@@ -1,6 +1,9 @@
-import java.io.File;
-import java.io.IOException;
-import java.io.InterruptedIOException;
+import org.apache.commons.io.IOUtils;
+
+import javax.swing.*;
+import java.io.*;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Random;
@@ -15,8 +18,9 @@ public class Server implements Runnable {
     Socket socket;
     int code;
     boolean onSystemExit;
+    MainWindow mw;
 
-    public Server() {
+    public Server(MainWindow mw) {
         try {
             ss = new ServerSocket(Server.DEFAULT_PORT);
         } catch (IOException e) {
@@ -24,6 +28,8 @@ public class Server implements Runnable {
         }
         onSystemExit = false;
         code = renewCode();
+        this.mw = mw;
+        mw.updateLblCode(code);
     }
 
     public int renewCode() {
@@ -35,9 +41,51 @@ public class Server implements Runnable {
         try {
             while (!onSystemExit) {
                 socket = ss.accept();
-                System.out.println("Incoming transmission detected. Incoming IP address: " +
+                System.out.println("Incoming transmission from: " +
                         socket.getInetAddress().toString().substring(1));
+                BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                String line = br.readLine();
+                String[] params = line.split(" ");
+                String code = params[0]; String transmissionType = params[1];
+                if (Integer.parseInt(code) == this.code) {
+                    if (transmissionType.equals("TEXT")) {
+                        line = br.readLine();
+                        MessageDialog md = new MessageDialog(line);
+                        System.out.println("Message received: " + line);
+                        md.setVisible(true);
+                    } else if (transmissionType.equals("FILE")) {
+                        line = br.readLine();
+                        String[] fileParams = line.split(" ");
+                        int option = JOptionPane.showConfirmDialog(mw.getPanel(),
+                                "Incoming file. Do you want to save it?\nFilename: " + fileParams[0] +
+                                        "\nSize: " + (Math.round(Double.parseDouble(fileParams[1]) / 1024.0 * 100) / 100.0) + " KB", "Incoming", JOptionPane.YES_NO_OPTION);
+                        if (option == JOptionPane.YES_OPTION) {
+                            JFileChooser fc = new JFileChooser();
+                            fc.setSelectedFile(new File(fileParams[0]));
+                            int fileOption = fc.showSaveDialog(mw.getPanel());
+                            boolean confirmDiscard = false;
 
+                            while (fileOption != JFileChooser.APPROVE_OPTION || confirmDiscard) {
+                                int confirmOption = JOptionPane.showConfirmDialog(mw.getPanel(), "You haven't selected a file yet, do you want to discard it?",
+                                        "Confirm File Discard", JOptionPane.WARNING_MESSAGE);
+                                if (confirmOption == JOptionPane.YES_OPTION) confirmDiscard = true;
+                            }
+                            if (!confirmDiscard) {
+                                File file = fc.getSelectedFile();
+                                FileOutputStream fos = new FileOutputStream(file);
+                                IOUtils.copy(socket.getInputStream(), fos);
+                                JOptionPane.showMessageDialog(mw.getPanel(), "File written to file system.");
+                                System.out.println("File written to file system");
+                                fos.close();
+                            }
+                        }
+                    }
+                } else {
+                    System.out.println("Code mismatch. File/text discarded.");
+                }
+                //TODO: Add renewCode here
+                this.code = renewCode();
+                this.mw.updateLblCode(this.code);
             }
         } catch (InterruptedIOException e1) {
             onSystemExit = true;
@@ -45,4 +93,5 @@ public class Server implements Runnable {
             e.printStackTrace();
         }
     }
+
 }
